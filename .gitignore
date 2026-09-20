@@ -1,0 +1,7 @@
+*.pem
+*.key
+.env
+.env.*
+.aws/
+notes/*.pdf
+aws-solutions-architect-associate/
