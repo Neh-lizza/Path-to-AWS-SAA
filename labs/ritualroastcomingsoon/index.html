@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coming Soon</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+            width: 100%;
+        }
+        .logo {
+            width: 25%;
+            max-width: 400px;
+            height: auto;
+            margin-right: 20px;
+        }
+        .banner {
+            width: 60%;
+            max-width: 100%;
+            height: auto;
+        }
+        .coming-soon {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-top: 50px;
+        }
+        .coming-soon img {
+            width: 100%;
+            max-width: 1200px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="logo.png" alt="Logo" class="logo">
+        <img src="main-banner.jpg" alt="Main Banner" class="banner">
+    </div>
+    <div class="coming-soon">
+        <img src="coming-soon.jpg" alt="Coming Soon">
+    </div>
+</body>
+</html>
