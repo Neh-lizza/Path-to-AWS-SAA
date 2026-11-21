@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Learn how IP ranges work and how subnets divide a network into smaller address spaces.">
+<meta name="theme-color" content="#14407a">
+<title>CIDR, IP addresses, and subnetting | The Path to AWS Associate</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%2314407a%27/%3E%3Ctext x=%2716%27 y=%2721%27 font-size=%2713%27 text-anchor=%27middle%27 fill=%27white%27 font-family=%27monospace%27%3EP/%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../styles.css"><link rel="stylesheet" href="../article.css">
+<script>document.documentElement.classList.add("js")</script>
+<script src="../script.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap header-inner"><a class="wordmark" href="../index.html" aria-label="The Path to AWS Associate home"><span class="wordmark-mark" aria-hidden="true">P/</span><span><small>THE PATH TO</small>AWS Associate</span></a><button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="primary-nav">Menu</button><nav class="primary-nav" id="primary-nav" aria-label="Main navigation"><a href="../index.html">Home</a><a href="../index.html#articles" class="active" aria-current="page">Articles</a><a href="../blog.html">Blog</a><a href="../index.html#projects">Projects</a><a href="../learning-path.html">Learning path</a><a href="../index.html#about">About</a></nav></div></header>
+<main id="main"><header class="article-hero"><a class="back-link" href="../index.html#articles">← Back to notes</a>
+<p class="eyebrow">NETWORKING / Field note</p><h1>CIDR, IP addresses, and subnetting</h1><p class="article-deck">IP ranges look like magic numbers until you see the pattern. Here is how CIDR notation works and how it shapes every VPC you will build.</p>
+<div class="article-meta"><span>NETWORKING</span><span>7 MIN READ</span></div></header>
+<div class="wrap"><div class="article-cover visual-networking"><span class="visual-index">02 / NETWORKING</span><svg class="tree" viewBox="0 0 320 160" aria-hidden="true"><path d="M160 48v20M160 68H80v20M160 68h80v20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="160" cy="68" r="5" fill="#d42b2b"/><rect x="95" y="10" width="130" height="38" rx="13" fill="#ffd966"/><rect x="25" y="88" width="110" height="48" rx="15" fill="#ffffff"/><rect x="185" y="88" width="110" height="48" rx="15" fill="#dbe6ef"/><g text-anchor="middle" fill="#0f2440"><text x="160" y="34">VPC</text><text x="80" y="117">SUBNET A</text><text x="240" y="117">SUBNET B</text></g></svg></div></div>
+<div class="wrap article-layout"><aside class="article-sidebar"><p class="eyebrow">On this page</p><nav aria-label="On this page"><a href="#ip">IP addresses in one minute</a><a href="#cidr">Reading CIDR notation</a><a href="#subnets">Splitting a VPC into subnets</a><a href="#reserved">Five addresses you never get</a><a href="#private">Private ranges</a><a href="#public">What makes a subnet public?</a></nav></aside>
+<article class="prose"><h2 id="ip">IP addresses in one minute</h2>
+<p>An IPv4 address is 32 bits, written as four numbers from 0 to 255, such as <code>10.0.1.25</code>. Part of the address names the <strong>network</strong>, and the rest names the <strong>host</strong> inside it.</p>
+<h2 id="cidr">Reading CIDR notation</h2>
+<p>In <code>10.0.0.0/16</code>, the number after the slash says how many leading bits are fixed for the network. The remaining bits are free for hosts, so a range holds <strong>2<sup>(32 − prefix)</sup></strong> addresses.</p><div class="table-wrap"><table><thead><tr><th>CIDR</th><th>Free bits</th><th>Addresses</th></tr></thead><tbody><tr><td class="mono">/16</td><td>16</td><td>65,536</td></tr><tr><td class="mono">/20</td><td>12</td><td>4,096</td></tr><tr><td class="mono">/24</td><td>8</td><td>256</td></tr><tr><td class="mono">/28</td><td>4</td><td>16</td></tr></tbody></table></div><p>A smaller prefix means a bigger network. A VPC accepts a CIDR block between <code>/16</code> and <code>/28</code>.</p>
+<h2 id="subnets">Splitting a VPC into subnets</h2>
+<p>A subnet is a slice of the VPC range that lives in <strong>one Availability Zone</strong>. A common starting layout:</p><div class="table-wrap"><table><thead><tr><th>Range</th><th>Purpose</th><th>Zone</th></tr></thead><tbody><tr><td class="mono">10.0.0.0/16</td><td>The VPC</td><td>Whole Region</td></tr><tr><td class="mono">10.0.1.0/24</td><td>Public subnet</td><td>AZ a</td></tr><tr><td class="mono">10.0.2.0/24</td><td>Private subnet</td><td>AZ a</td></tr><tr><td class="mono">10.0.3.0/24</td><td>Public subnet</td><td>AZ b</td></tr></tbody></table></div>
+<h2 id="reserved">Five addresses you never get</h2>
+<p>AWS reserves five addresses in every subnet: the first four and the last one. So a <code>/24</code> gives <strong>251</strong> usable addresses, and a <code>/28</code> gives only <strong>11</strong>. Plan for it before sizing small subnets.</p>
+<h2 id="private">Private ranges</h2>
+<p>Use the private ranges defined in RFC 1918 for a VPC: <code>10.0.0.0/8</code>, <code>172.16.0.0/12</code>, and <code>192.168.0.0/16</code>. Avoid overlapping ranges between VPCs you may want to connect later.</p>
+<h2 id="public">What makes a subnet public?</h2>
+<p>Not its address. A subnet is public when its <strong>route table</strong> sends <code>0.0.0.0/0</code> to an Internet Gateway. A private subnet has no such route, and may reach out through a NAT Gateway instead.</p><details><summary>Check your understanding</summary><ol><li>How many addresses does a /24 contain, and how many are usable in AWS?</li><li>What is the smallest VPC CIDR block AWS allows?</li><li>Which setting turns a subnet into a public subnet?</li></ol><p>Answer them in your own words, then compare with the linked AWS documentation.</p></details><p>Docs: <a href="https://docs.aws.amazon.com/vpc/latest/userguide/subnet-sizing.html">Subnet CIDR blocks</a></p><p class="article-disclaimer">This is a study note, not official AWS guidance. Check the linked AWS documentation before using these steps in a real account, as consoles and limits change.</p>
+</article></div>
+<div class="wrap"><p class="eyebrow">Keep reading</p><div class="related"><a href="security-groups-vs-nacls.html"><small>NETWORKING / 6 MIN READ</small><strong>Security groups vs network ACLs</strong></a><a href="cloud-fundamentals.html"><small>FUNDAMENTALS / 6 MIN READ</small><strong>What cloud computing actually means</strong></a></div></div></main>
+<footer class="site-footer"><div class="wrap footer-inner"><a class="wordmark footer-wordmark" href="../index.html"><span class="wordmark-mark" aria-hidden="true">P/</span><span><small>THE PATH TO</small>AWS Associate</span></a><p>Built to learn. Documented to understand.</p><a href="#main" class="back-top">Back to top ↑</a></div><div class="wrap footer-bottom"><span>Independent learning project</span><span>Static website · Amazon S3 ready</span></div></footer>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Understand buckets, website hosting, index documents, and the permissions that control public access.">
+<meta name="theme-color" content="#14407a">
+<title>Host a static website on Amazon S3 | The Path to AWS Associate</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%2314407a%27/%3E%3Ctext x=%2716%27 y=%2721%27 font-size=%2713%27 text-anchor=%27middle%27 fill=%27white%27 font-family=%27monospace%27%3EP/%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../styles.css"><link rel="stylesheet" href="../article.css">
+<script>document.documentElement.classList.add("js")</script>
+<script src="../script.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap header-inner"><a class="wordmark" href="../index.html" aria-label="The Path to AWS Associate home"><span class="wordmark-mark" aria-hidden="true">P/</span><span><small>THE PATH TO</small>AWS Associate</span></a><button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="primary-nav">Menu</button><nav class="primary-nav" id="primary-nav" aria-label="Main navigation"><a href="../index.html">Home</a><a href="../index.html#articles" class="active" aria-current="page">Articles</a><a href="../blog.html">Blog</a><a href="../index.html#projects">Projects</a><a href="../learning-path.html">Learning path</a><a href="../index.html#about">About</a></nav></div></header>
+<main id="main"><header class="article-hero"><a class="back-link" href="../index.html#articles">← Back to notes</a>
+<p class="eyebrow">STORAGE / Field note</p><h1>Host a static website on Amazon S3</h1><p class="article-deck">Upload a few files to a bucket, turn on website hosting, and see exactly which permissions decide whether the world can read them.</p>
+<div class="article-meta"><span>STORAGE</span><span>8 MIN READ</span></div></header>
+<div class="wrap"><div class="article-cover visual-storage"><span class="visual-index">01 / STORAGE</span><svg class="tree" viewBox="0 0 320 160" aria-hidden="true"><path d="M160 48v20M160 68H80v20M160 68h80v20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="160" cy="68" r="5" fill="#d42b2b"/><rect x="95" y="10" width="130" height="38" rx="13" fill="#ffd966"/><rect x="25" y="88" width="110" height="48" rx="15" fill="#ffffff"/><rect x="185" y="88" width="110" height="48" rx="15" fill="#dbe6ef"/><g text-anchor="middle" fill="#0f2440"><text x="160" y="34">WEBSITE</text><text x="80" y="117">FILES</text><text x="240" y="117">BUCKET</text></g></svg></div></div>
+<div class="wrap article-layout"><aside class="article-sidebar"><p class="eyebrow">On this page</p><nav aria-label="On this page"><a href="#overview">What you are building</a><a href="#bucket">1. Create a bucket</a><a href="#upload">2. Upload the site files</a><a href="#hosting">3. Enable static website hosting</a><a href="#access">4. Allow public read access (lab only)</a><a href="#test">5. Test the endpoint</a><a href="#production">Going further</a><a href="#cleanup">Clean up</a></nav></aside>
+<article class="prose"><h2 id="overview">What you are building</h2>
+<p>A <strong>static website</strong> is made of files that never change on the server: HTML, CSS, JavaScript, and images. Amazon S3 can serve those files directly from a bucket, so there is no server to manage.</p>
+<p class="callout">Direct S3 website endpoints use <strong>HTTP</strong>, not HTTPS. That is fine for a lab. For a real site, put CloudFront in front of a private bucket.</p>
+<h2 id="bucket">1. Create a bucket</h2>
+<p>Open the S3 console and choose <strong>Create bucket</strong>. Bucket names are globally unique, so pick something specific like <code>aws-path-lab-yourname</code>. Choose the Region closest to you and leave <strong>Block Public Access</strong> on for now.</p>
+<h2 id="upload">2. Upload the site files</h2>
+<p>Upload <code>index.html</code>, the CSS and JavaScript files, and every folder, keeping the same structure. Links such as <code>articles/networking-cidr.html</code> only work if the folder path matches.</p>
+<h2 id="hosting">3. Enable static website hosting</h2>
+<ol><li>Open the bucket, then the <strong>Properties</strong> tab.</li><li>Scroll to <strong>Static website hosting</strong> and choose Edit.</li><li>Enable hosting and set <code>index.html</code> as the index document.</li><li>Save, and note the website endpoint shown at the bottom of the section.</li></ol>
+<h2 id="access">4. Allow public read access (lab only)</h2>
+<p>Visitors are anonymous, so the objects must be readable by everyone. This needs two changes: turn off Block Public Access for this bucket, then add a bucket policy. Account-level or organization-level settings can still block this, which is a good thing in real accounts.</p>
+<pre><code>{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Sid": "PublicReadForWebsite",
+    "Effect": "Allow",
+    "Principal": "*",
+    "Action": "s3:GetObject",
+    "Resource": "arn:aws:s3:::YOUR-BUCKET-NAME/*"
+  }]
+}</code></pre>
+<p>Replace <code>YOUR-BUCKET-NAME</code> with your bucket. Note that the action is <code>s3:GetObject</code> only. Never grant public write access.</p>
+<h2 id="test">5. Test the endpoint</h2>
+<p>Open the endpoint URL from step 3. Then click through every page, check that the CSS loaded, and try the search and filters. If you see <em>403 Forbidden</em>, re-check the bucket policy and Block Public Access. If you see <em>404</em>, check that the index document name matches the file exactly.</p>
+<h2 id="production">Going further</h2>
+<p>For HTTPS and better control, use <strong>CloudFront</strong> with a private S3 bucket and Origin Access Control. Visitors reach the site through CloudFront, and the bucket never needs to be public.</p>
+<h2 id="cleanup">Clean up</h2>
+<p>When the lab is finished, empty and delete the bucket so nothing is left behind. Confirm first that it holds no files you still need.</p><details><summary>Check your understanding</summary><ol><li>Why must the files keep their folder structure when uploaded?</li><li>Which two settings must both allow access before an anonymous visitor can read an object?</li><li>Why is the website endpoint not enough for a production site?</li></ol><p>Answer them in your own words, then compare with the linked AWS documentation.</p></details><p>Docs: <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html">Hosting a static website on Amazon S3</a> · <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html">Blocking public access</a></p><p class="article-disclaimer">This is a study note, not official AWS guidance. Check the linked AWS documentation before using these steps in a real account, as consoles and limits change.</p>
+</article></div>
+<div class="wrap"><p class="eyebrow">Keep reading</p><div class="related"><a href="networking-cidr.html"><small>NETWORKING / 7 MIN READ</small><strong>CIDR, IP addresses, and subnetting</strong></a><a href="iam-roles-vs-users.html"><small>SECURITY / 7 MIN READ</small><strong>IAM users vs roles: who gets which keys?</strong></a></div></div></main>
+<footer class="site-footer"><div class="wrap footer-inner"><a class="wordmark footer-wordmark" href="../index.html"><span class="wordmark-mark" aria-hidden="true">P/</span><span><small>THE PATH TO</small>AWS Associate</span></a><p>Built to learn. Documented to understand.</p><a href="#main" class="back-top">Back to top ↑</a></div><div class="wrap footer-bottom"><span>Independent learning project</span><span>Static website · Amazon S3 ready</span></div></footer>
+</body>
+</html>

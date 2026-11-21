@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Two firewalls in a VPC, two different jobs: stateful instance rules versus stateless subnet rules.">
+<meta name="theme-color" content="#14407a">
+<title>Security groups vs network ACLs | The Path to AWS Associate</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%2314407a%27/%3E%3Ctext x=%2716%27 y=%2721%27 font-size=%2713%27 text-anchor=%27middle%27 fill=%27white%27 font-family=%27monospace%27%3EP/%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../styles.css"><link rel="stylesheet" href="../article.css">
+<script>document.documentElement.classList.add("js")</script>
+<script src="../script.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap header-inner"><a class="wordmark" href="../index.html" aria-label="The Path to AWS Associate home"><span class="wordmark-mark" aria-hidden="true">P/</span><span><small>THE PATH TO</small>AWS Associate</span></a><button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="primary-nav">Menu</button><nav class="primary-nav" id="primary-nav" aria-label="Main navigation"><a href="../index.html">Home</a><a href="../index.html#articles" class="active" aria-current="page">Articles</a><a href="../blog.html">Blog</a><a href="../index.html#projects">Projects</a><a href="../learning-path.html">Learning path</a><a href="../index.html#about">About</a></nav></div></header>
+<main id="main"><header class="article-hero"><a class="back-link" href="../index.html#articles">← Back to notes</a>
+<p class="eyebrow">NETWORKING / Field note</p><h1>Security groups vs network ACLs</h1><p class="article-deck">Both filter traffic in a VPC, but they sit in different places and behave differently. Knowing which is which answers many exam questions.</p>
+<div class="article-meta"><span>NETWORKING</span><span>6 MIN READ</span></div></header>
+<div class="wrap"><div class="article-cover visual-networking"><span class="visual-index">06 / NETWORKING</span><svg class="tree" viewBox="0 0 320 160" aria-hidden="true"><path d="M160 48v20M160 68H80v20M160 68h80v20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="160" cy="68" r="5" fill="#d42b2b"/><rect x="95" y="10" width="130" height="38" rx="13" fill="#ffd966"/><rect x="25" y="88" width="110" height="48" rx="15" fill="#ffffff"/><rect x="185" y="88" width="110" height="48" rx="15" fill="#dbe6ef"/><g text-anchor="middle" fill="#0f2440"><text x="160" y="34">SUBNET</text><text x="80" y="117">NACL</text><text x="240" y="117">SEC. GROUP</text></g></svg></div></div>
+<div class="wrap article-layout"><aside class="article-sidebar"><p class="eyebrow">On this page</p><nav aria-label="On this page"><a href="#two">Two layers of defense</a><a href="#compare">Side by side</a><a href="#stateful">Stateful vs stateless</a><a href="#example">Example: a web server</a><a href="#rule">Rule of thumb</a></nav></aside>
+<article class="prose"><h2 id="two">Two layers of defense</h2>
+<p>A <strong>security group</strong> protects individual resources such as an EC2 instance. A <strong>network ACL (NACL)</strong> protects a whole subnet. Traffic usually passes through both.</p>
+<h2 id="compare">Side by side</h2>
+<div class="table-wrap"><table><thead><tr><th></th><th>Security group</th><th>Network ACL</th></tr></thead><tbody><tr><td>Applies to</td><td>Network interface / instance</td><td>Subnet</td></tr><tr><td>State</td><td>Stateful</td><td>Stateless</td></tr><tr><td>Rule types</td><td>Allow only</td><td>Allow and deny</td></tr><tr><td>Evaluation</td><td>All rules together</td><td>In number order, first match wins</td></tr><tr><td>Default</td><td>Deny inbound, allow outbound</td><td>Default NACL allows all</td></tr></tbody></table></div>
+<h2 id="stateful">Stateful vs stateless</h2>
+<p>Because a security group is <strong>stateful</strong>, if you allow a request in, the reply is allowed out automatically. A NACL is <strong>stateless</strong>, so you must allow the reply traffic explicitly, including the ephemeral port range (1024–65535) for return traffic.</p>
+<h2 id="example">Example: a web server</h2>
+<ul><li>Security group: allow inbound TCP 443 from anywhere, and TCP 22 only from your own IP.</li><li>NACL: allow inbound 443 and outbound ephemeral ports. Add a deny rule to block one abusive address, which a security group cannot do.</li></ul>
+<h2 id="rule">Rule of thumb</h2>
+<p>Do most of your filtering with security groups. Use NACLs as a coarse extra layer, or when you need to explicitly deny an address range.</p><details><summary>Check your understanding</summary><ol><li>Which one can contain a deny rule?</li><li>Why does a NACL need rules for return traffic?</li><li>At what level does each one apply?</li></ol><p>Answer them in your own words, then compare with the linked AWS documentation.</p></details><p>Docs: <a href="https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html">Security groups</a> · <a href="https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html">Network ACLs</a></p><p class="article-disclaimer">This is a study note, not official AWS guidance. Check the linked AWS documentation before using these steps in a real account, as consoles and limits change.</p>
+</article></div>
+<div class="wrap"><p class="eyebrow">Keep reading</p><div class="related"><a href="networking-cidr.html"><small>NETWORKING / 7 MIN READ</small><strong>CIDR, IP addresses, and subnetting</strong></a><a href="iam-roles-vs-users.html"><small>SECURITY / 7 MIN READ</small><strong>IAM users vs roles: who gets which keys?</strong></a></div></div></main>
+<footer class="site-footer"><div class="wrap footer-inner"><a class="wordmark footer-wordmark" href="../index.html"><span class="wordmark-mark" aria-hidden="true">P/</span><span><small>THE PATH TO</small>AWS Associate</span></a><p>Built to learn. Documented to understand.</p><a href="#main" class="back-top">Back to top ↑</a></div><div class="wrap footer-bottom"><span>Independent learning project</span><span>Static website · Amazon S3 ready</span></div></footer>
+</body>
+</html>

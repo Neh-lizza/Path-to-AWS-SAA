@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Users, groups, roles, and policies explained, plus why temporary credentials beat long-lived keys.">
+<meta name="theme-color" content="#14407a">
+<title>IAM users vs roles: who gets which keys? | The Path to AWS Associate</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%2314407a%27/%3E%3Ctext x=%2716%27 y=%2721%27 font-size=%2713%27 text-anchor=%27middle%27 fill=%27white%27 font-family=%27monospace%27%3EP/%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../styles.css"><link rel="stylesheet" href="../article.css">
+<script>document.documentElement.classList.add("js")</script>
+<script src="../script.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap header-inner"><a class="wordmark" href="../index.html" aria-label="The Path to AWS Associate home"><span class="wordmark-mark" aria-hidden="true">P/</span><span><small>THE PATH TO</small>AWS Associate</span></a><button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="primary-nav">Menu</button><nav class="primary-nav" id="primary-nav" aria-label="Main navigation"><a href="../index.html">Home</a><a href="../index.html#articles">Articles</a><a href="../blog.html" class="active" aria-current="page">Blog</a><a href="../index.html#projects">Projects</a><a href="../learning-path.html">Learning path</a><a href="../index.html#about">About</a></nav></div></header>
+<main id="main"><header class="article-hero"><a class="back-link" href="../blog.html">← Back to blog</a>
+<p class="eyebrow">SECURITY / Blog post</p><h1>IAM users vs roles: who gets which keys?</h1><p class="article-deck">IAM decides who can do what in your account. The key habit: give people the least access they need, and give workloads roles instead of keys.</p>
+<div class="article-meta"><span>SECURITY</span><span>7 MIN READ</span></div></header>
+<div class="wrap"><div class="article-cover visual-security"><span class="visual-index">04 / SECURITY</span><svg class="tree" viewBox="0 0 320 160" aria-hidden="true"><path d="M160 48v20M160 68H80v20M160 68h80v20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="160" cy="68" r="5" fill="#d42b2b"/><rect x="95" y="10" width="130" height="38" rx="13" fill="#ffd966"/><rect x="25" y="88" width="110" height="48" rx="15" fill="#ffffff"/><rect x="185" y="88" width="110" height="48" rx="15" fill="#dbe6ef"/><g text-anchor="middle" fill="#0f2440"><text x="160" y="34">IAM ROLE</text><text x="80" y="117">USER</text><text x="240" y="117">SERVICE</text></g></svg></div></div>
+<div class="wrap article-layout"><aside class="article-sidebar"><p class="eyebrow">On this page</p><nav aria-label="On this page"><a href="#terms">The four building blocks</a><a href="#roles">Why roles matter</a><a href="#policy">Reading a policy</a><a href="#eval">How a decision is made</a><a href="#habits">Habits worth building</a></nav></aside>
+<article class="prose"><h2 id="terms">The four building blocks</h2>
+<div class="table-wrap"><table><thead><tr><th>Concept</th><th>What it is</th></tr></thead><tbody><tr><td>User</td><td>A long-lived identity for one person or app, with its own credentials</td></tr><tr><td>Group</td><td>A collection of users that share the same permissions</td></tr><tr><td>Role</td><td>An identity that anything trusted can assume for a short time</td></tr><tr><td>Policy</td><td>A JSON document that allows or denies actions on resources</td></tr></tbody></table></div>
+<h2 id="roles">Why roles matter</h2>
+<p>When something assumes a role, AWS issues <strong>temporary credentials</strong> that expire automatically. An EC2 instance, a Lambda function, or a person from another account can use a role without a stored access key. If temporary credentials leak, they stop working soon. A leaked long-term key keeps working until someone notices.</p>
+<h2 id="policy">Reading a policy</h2>
+<pre><code>{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Action": ["s3:GetObject", "s3:ListBucket"],
+    "Resource": [
+      "arn:aws:s3:::example-bucket",
+      "arn:aws:s3:::example-bucket/*"
+    ]
+  }]
+}</code></pre><p>This grants read-only access to a single bucket. Nothing else is allowed, because everything is denied by default.</p>
+<h2 id="eval">How a decision is made</h2>
+<ol><li>Everything starts as <strong>implicitly denied</strong>.</li><li>An <strong>Allow</strong> in an applicable policy can open an action.</li><li>An <strong>explicit Deny</strong> always wins over any Allow.</li></ol>
+<h2 id="habits">Habits worth building</h2>
+<ul><li>Apply <strong>least privilege</strong>: start narrow and add access when needed.</li><li>Do not use the root user for daily work, and protect it with MFA.</li><li>Prefer roles for applications and cross-account access.</li><li>Put users in groups, then attach policies to the group.</li></ul><details><summary>Check your understanding</summary><ol><li>What happens when one policy allows an action and another explicitly denies it?</li><li>Why is a role safer than an access key for an EC2 instance?</li><li>What is the difference between identity-based and resource-based policies?</li></ol><p>Answer them in your own words, then compare with the linked AWS documentation.</p></details><p>Docs: <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html">IAM security best practices</a></p><p class="article-disclaimer">This is a study note, not official AWS guidance. Check the linked AWS documentation before using these steps in a real account, as consoles and limits change.</p>
+</article></div>
+<div class="wrap"><p class="eyebrow">Keep reading</p><div class="related"><a href="scps-explained.html"><small>SECURITY / 6 MIN READ</small><strong>Service Control Policies: guardrails, not permissions</strong></a><a href="s3-static-website.html"><small>STORAGE / 8 MIN READ</small><strong>Host a static website on Amazon S3</strong></a></div></div></main>
+<footer class="site-footer"><div class="wrap footer-inner"><a class="wordmark footer-wordmark" href="../index.html"><span class="wordmark-mark" aria-hidden="true">P/</span><span><small>THE PATH TO</small>AWS Associate</span></a><p>Built to learn. Documented to understand.</p><a href="#main" class="back-top">Back to top ↑</a></div><div class="wrap footer-bottom"><span>Independent learning project</span><span>Static website · Amazon S3 ready</span></div></footer>
+</body>
+</html>

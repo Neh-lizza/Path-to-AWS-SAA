@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Almost two nights debugging a webpage on EC2, and the one missing outbound rule that caused it.">
+<meta name="theme-color" content="#14407a">
+<title>Two Nights, One Missing Rule | The Path to AWS Associate</title>
+<link rel="stylesheet" href="../styles.css"><link rel="stylesheet" href="../article.css">
+<script>document.documentElement.classList.add("js")</script>
+<script src="../script.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap header-inner">
+<a class="wordmark" href="../index.html" aria-label="The Path to AWS Associate home"><span class="wordmark-mark" aria-hidden="true">P/</span><span><small>THE PATH TO</small>AWS Associate</span></a>
+<button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="primary-nav">Menu</button>
+<nav class="primary-nav" id="primary-nav" aria-label="Main navigation">
+<a href="../index.html">Home</a><a href="../index.html#articles">Articles</a><a href="../blog.html" class="active" aria-current="page">Blog</a><a href="../index.html#projects">Projects</a><a href="../learning-path.html">Learning path</a><a href="../index.html#about">About</a>
+</nav></div></header>
+
+<main id="main">
+<header class="article-hero">
+<a class="back-link" href="../blog.html">← Back to blog</a>
+<p class="eyebrow">NETWORKING / Blog post</p>
+<h1>Two Nights, One Missing Rule</h1>
+<p class="article-deck">I was so happy when I finally got this working!</p>
+<div class="article-meta"><span>NETWORKING</span><span>3 MIN READ</span></div>
+</header>
+
+<div class="wrap"><div class="article-cover visual-networking"><span class="visual-index">07 / NETWORKING</span>
+<svg class="tree" viewBox="0 0 320 160" aria-hidden="true"><path d="M160 48v20M160 68H80v20M160 68h80v20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="160" cy="68" r="5" fill="#d42b2b"/><rect x="95" y="10" width="130" height="38" rx="13" fill="#ffd966"/><rect x="25" y="88" width="110" height="48" rx="15" fill="#ffffff"/><rect x="185" y="88" width="110" height="48" rx="15" fill="#dbe6ef"/><g text-anchor="middle" fill="#0f2440"><text x="160" y="34">EC2</text><text x="80" y="117">INBOUND</text><text x="240" y="117">OUTBOUND</text></g></svg>
+</div></div>
+
+<div class="wrap article-layout">
+<aside class="article-sidebar"><p class="eyebrow">On this page</p><nav aria-label="On this page"><a href="#story">The story</a><a href="#cause">What was wrong</a><a href="#fix">The fix</a><a href="#lesson">The lesson</a></nav></aside>
+<article class="prose">
+<h2 id="story">The story</h2>
+<p>I spent almost two nights trying to get a simple webpage running on an EC2 instance. I followed so many tutorials. Everyone seemed to get it working effortlessly, but mine just wouldn't cooperate.</p>
+<p>Apache wouldn't install, the webpage wouldn't load, and I kept going back to check the same configurations.</p>
+<p>At some point, I started questioning everything. Was it my User Data script? My subnet? My route table? My security group?</p>
+
+<h2 id="cause">What was wrong</h2>
+<p>Turns out, I had overlooked one little thing: <strong>outbound rules</strong>.</p>
+<p>I had configured inbound traffic to allow HTTP requests, but my security group had no outbound rules. My instance couldn't reach the internet to download the packages it needed.</p>
+<p class="callout">One missing rule. Almost two nights.</p>
+<p>I also discovered that I was using commands from an Amazon Linux tutorial on an Ubuntu instance. Another little lesson!</p>
+
+<h2 id="fix">The fix</h2>
+<ol>
+<li>Open the instance's security group and choose <strong>Outbound rules</strong>.</li>
+<li>Add a rule that allows outbound traffic (for a lab, <code>All traffic</code> to <code>0.0.0.0/0</code>, which is what a new security group allows by default).</li>
+<li>Use the package manager that matches your operating system:</li>
+</ol>
+<div class="table-wrap"><table><thead><tr><th>OS</th><th>Install Apache</th></tr></thead><tbody>
+<tr><td>Amazon Linux</td><td class="mono">sudo dnf install -y httpd</td></tr>
+<tr><td>Ubuntu</td><td class="mono">sudo apt update &amp;&amp; sudo apt install -y apache2</td></tr>
+</tbody></table></div>
+
+<h2 id="lesson">The lesson</h2>
+<p>Anyway, the page finally loaded, and I was genuinely excited to see it work.</p>
+<p>Cloud computing is slowly teaching me that sometimes the real learning starts when things refuse to work.</p>
+<p><strong>On to the next practical!</strong></p>
+<p>Related: <a href="security-groups-vs-nacls.html">Security groups vs network ACLs</a></p>
+</article></div>
+</main>
+
+<footer class="site-footer"><div class="wrap footer-inner">
+<a class="wordmark footer-wordmark" href="../index.html"><span class="wordmark-mark" aria-hidden="true">P/</span><span><small>THE PATH TO</small>AWS Associate</span></a>
+<p>Built to learn. Documented to understand.</p><a href="#main" class="back-top">Back to top ↑</a></div>
+<div class="wrap footer-bottom"><span>Independent learning project</span><span>Static website · Amazon S3 ready</span></div></footer>
+</body>
+</html>

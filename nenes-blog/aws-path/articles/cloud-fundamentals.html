@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Start with the core idea: using computing resources over a network instead of owning every server.">
+<meta name="theme-color" content="#14407a">
+<title>What cloud computing actually means | The Path to AWS Associate</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%2314407a%27/%3E%3Ctext x=%2716%27 y=%2721%27 font-size=%2713%27 text-anchor=%27middle%27 fill=%27white%27 font-family=%27monospace%27%3EP/%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../styles.css"><link rel="stylesheet" href="../article.css">
+<script>document.documentElement.classList.add("js")</script>
+<script src="../script.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap header-inner"><a class="wordmark" href="../index.html" aria-label="The Path to AWS Associate home"><span class="wordmark-mark" aria-hidden="true">P/</span><span><small>THE PATH TO</small>AWS Associate</span></a><button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="primary-nav">Menu</button><nav class="primary-nav" id="primary-nav" aria-label="Main navigation"><a href="../index.html">Home</a><a href="../index.html#articles" class="active" aria-current="page">Articles</a><a href="../blog.html">Blog</a><a href="../index.html#projects">Projects</a><a href="../learning-path.html">Learning path</a><a href="../index.html#about">About</a></nav></div></header>
+<main id="main"><header class="article-hero"><a class="back-link" href="../index.html#articles">← Back to notes</a>
+<p class="eyebrow">FUNDAMENTALS / Field note</p><h1>What cloud computing actually means</h1><p class="article-deck">Before any service names, start with the idea: renting computing power over a network, on demand, instead of owning every server.</p>
+<div class="article-meta"><span>FUNDAMENTALS</span><span>6 MIN READ</span></div></header>
+<div class="wrap"><div class="article-cover visual-fundamentals"><span class="visual-index">03 / FUNDAMENTALS</span><svg class="tree" viewBox="0 0 320 160" aria-hidden="true"><path d="M160 48v20M160 68H80v20M160 68h80v20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="160" cy="68" r="5" fill="#d42b2b"/><rect x="95" y="10" width="130" height="38" rx="13" fill="#ffd966"/><rect x="25" y="88" width="110" height="48" rx="15" fill="#ffffff"/><rect x="185" y="88" width="110" height="48" rx="15" fill="#dbe6ef"/><g text-anchor="middle" fill="#0f2440"><text x="160" y="34">CLOUD</text><text x="80" y="117">ON DEMAND</text><text x="240" y="117">SCALE</text></g></svg></div></div>
+<div class="wrap article-layout"><aside class="article-sidebar"><p class="eyebrow">On this page</p><nav aria-label="On this page"><a href="#idea">The core idea</a><a href="#traits">What makes it different</a><a href="#global">Regions and Availability Zones</a><a href="#models">Service models</a><a href="#shared">Shared responsibility</a><a href="#why">Why organizations use it</a></nav></aside>
+<article class="prose"><h2 id="idea">The core idea</h2>
+<p>Cloud computing means using computing resources, such as servers, storage, and databases, <strong>over the internet</strong> and paying for what you use. Instead of buying hardware and waiting weeks, you request resources and have them in minutes.</p>
+<h2 id="traits">What makes it different</h2>
+<ul><li><strong>On-demand self-service:</strong> you create resources yourself, without a purchase order.</li><li><strong>Elasticity:</strong> scale up for a busy day and down afterwards.</li><li><strong>Pay as you go:</strong> costs follow usage rather than upfront hardware.</li><li><strong>Global reach:</strong> deploy close to your users in many Regions.</li></ul>
+<h2 id="global">Regions and Availability Zones</h2>
+<p>A <strong>Region</strong> is a geographic area. Each Region has multiple <strong>Availability Zones</strong>: isolated data center groups with their own power and networking, connected by fast links. Spreading a workload across zones keeps it running if one zone fails.</p>
+<h2 id="models">Service models</h2>
+<div class="table-wrap"><table><thead><tr><th>Model</th><th>You manage</th><th>Example</th></tr></thead><tbody><tr><td>IaaS</td><td>OS, apps, data</td><td>Amazon EC2</td></tr><tr><td>PaaS</td><td>Apps and data</td><td>AWS Elastic Beanstalk</td></tr><tr><td>SaaS</td><td>Just your use of it</td><td>A web email service</td></tr></tbody></table></div>
+<h2 id="shared">Shared responsibility</h2>
+<p>AWS is responsible for security <strong>of</strong> the cloud: facilities, hardware, and the core services. You are responsible for security <strong>in</strong> the cloud: your data, identities, and configuration. A public S3 bucket is a configuration issue, not an AWS failure.</p>
+<h2 id="why">Why organizations use it</h2>
+<p>Faster experiments, less upfront cost, easier growth, and access to managed services. The trade-off is that cost and security now need active attention.</p><details><summary>Check your understanding</summary><ol><li>What is the difference between a Region and an Availability Zone?</li><li>Who is responsible for patching the guest OS on an EC2 instance?</li><li>Why is elasticity useful for cost?</li></ol><p>Answer them in your own words, then compare with the linked AWS documentation.</p></details><p>Docs: <a href="https://aws.amazon.com/what-is-cloud-computing/">What is cloud computing?</a> · <a href="https://aws.amazon.com/compliance/shared-responsibility-model/">Shared responsibility model</a></p><p class="article-disclaimer">This is a study note, not official AWS guidance. Check the linked AWS documentation before using these steps in a real account, as consoles and limits change.</p>
+</article></div>
+<div class="wrap"><p class="eyebrow">Keep reading</p><div class="related"><a href="s3-static-website.html"><small>STORAGE / 8 MIN READ</small><strong>Host a static website on Amazon S3</strong></a><a href="scps-explained.html"><small>SECURITY / 6 MIN READ</small><strong>Service Control Policies: guardrails, not permissions</strong></a></div></div></main>
+<footer class="site-footer"><div class="wrap footer-inner"><a class="wordmark footer-wordmark" href="../index.html"><span class="wordmark-mark" aria-hidden="true">P/</span><span><small>THE PATH TO</small>AWS Associate</span></a><p>Built to learn. Documented to understand.</p><a href="#main" class="back-top">Back to top ↑</a></div><div class="wrap footer-bottom"><span>Independent learning project</span><span>Static website · Amazon S3 ready</span></div></footer>
+</body>
+</html>
